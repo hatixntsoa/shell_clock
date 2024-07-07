@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Function to get terminal size
-get_terminal_size() {
+function get_terminal_size() {
 	local width height
 	width=$(tput cols)
 	height=$(tput lines)
@@ -9,7 +9,7 @@ get_terminal_size() {
 }
 
 # Function to center text
-center_text() {
+function center_text() {
 	local text="$1"
 	local width=$2
 	local text_length=${#text}
@@ -18,27 +18,26 @@ center_text() {
 }
 
 # Function to handle interruption
-cleanup() {
+function cleanup() {
 	echo -e && echo -e
 	exit 0
 }
 
 # Function to install figlet
-install_figlet() {
-	sudo echo
+function install_figlet() {
 	echo "Installing figlet..."
 
 	if command -v apt-get &>/dev/null; then
-		sudo apt-get update
-		sudo apt-get install -y figlet
+		$SUDO apt-get update
+		$SUDO apt-get install -y figlet
 	elif command -v yum &>/dev/null; then
-		sudo yum install -y figlet
+		$SUDO yum install -y figlet
 	elif command -v dnf &>/dev/null; then
-		sudo dnf install -y figlet
+		$SUDO dnf install -y figlet
 	elif command -v pacman &>/dev/null; then
-		sudo pacman -S --noconfirm figlet
+		$SUDO pacman -S --noconfirm figlet
 	elif command -v zypper &>/dev/null; then
-		sudo zypper install -y figlet
+		$SUDO zypper install -y figlet
 	else
 		echo "No supported package manager found. Please install figlet manually."
 		exit 1
@@ -46,11 +45,12 @@ install_figlet() {
 }
 
 # Function to check if figlet is installed
-check_figlet() {
+function check_figlet() {
 	if ! command -v figlet &>/dev/null; then
 		install_figlet
 		if ! command -v figlet &>/dev/null; then
 			echo "figlet installation failed. Please install it manually."
+			sleep 3
 			exit 1
 		fi
 		sleep 3
@@ -58,20 +58,47 @@ check_figlet() {
 }
 
 # Function to check if the ANSI Shadow font file exists
-font_check() {
-	if [ ! -f "/usr/share/figlet/ANSI Shadow.flf" ]; then
-		sudo echo
+function font_check() {
+	local figlet_fonts=$(
+		whereis figlet |
+			grep -o '/[^ ]*/share' |
+			sed 's/$/\/figlet/' |
+			head -n 1
+	)
+	if [ ! -f "$figlet_fonts/ANSI Shadow.flf" ]; then
 		echo "Installing ANSI Shadow figlet font..."
-		sudo cp -rv "ANSI Shadow.flf" /usr/share/figlet
+		$SUDO cp -rv "ANSI Shadow.flf" "$figlet_fonts"
+		if [ $? -eq 0 ]; then
+			echo "Font installed successfully."
+		else
+			echo "Failed to install font. Please check permissions or install manually."
+			exit 1
+		fi
 		sleep 3
 	fi
 }
+
+# Check if the script is running on Android
+if [ -f "/system/build.prop" ]; then
+	SUDO=""
+else
+	# Check for sudo availability on other Unix-like systems
+	if command -v sudo &>/dev/null; then
+		SUDO="sudo"
+	else
+		echo "Sorry, sudo is not available. Please run this script as root or with sudo."
+		exit 1
+	fi
+fi
 
 # Trap interrupt signal (SIGINT) and execute cleanup function
 trap cleanup SIGINT
 
 # Disable printing special characters when Ctrl+C is pressed
 stty -echoctl
+
+# Here to init sudo if needed
+$SUDO echo
 
 # Check if figlet is installed
 check_figlet
