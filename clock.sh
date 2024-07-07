@@ -23,21 +23,47 @@ cleanup() {
 	exit 0
 }
 
+# Function to install figlet
+install_figlet() {
+	sudo echo
+	echo "Installing figlet..."
+
+	if command -v apt-get &>/dev/null; then
+		sudo apt-get update
+		sudo apt-get install -y figlet
+	elif command -v yum &>/dev/null; then
+		sudo yum install -y figlet
+	elif command -v dnf &>/dev/null; then
+		sudo dnf install -y figlet
+	elif command -v pacman &>/dev/null; then
+		sudo pacman -S --noconfirm figlet
+	elif command -v zypper &>/dev/null; then
+		sudo zypper install -y figlet
+	else
+		echo "No supported package manager found. Please install figlet manually."
+		exit 1
+	fi
+}
+
 # Function to check if figlet is installed
 check_figlet() {
 	if ! command -v figlet &>/dev/null; then
-		echo "Please install figlet ..."
-		# sudo echo
-		# sudo apt install figlet -y
+		install_figlet
+		if ! command -v figlet &>/dev/null; then
+			echo "figlet installation failed. Please install it manually."
+			exit 1
+		fi
+		sleep 3
 	fi
 }
 
 # Function to check if the ANSI Shadow font file exists
 font_check() {
 	if [ ! -f "/usr/share/figlet/ANSI Shadow.flf" ]; then
-		echo "Please install ANSI Shadow figlet font..."
-		# sudo echo
+		sudo echo
+		echo "Installing ANSI Shadow figlet font..."
 		sudo cp -rv "ANSI Shadow.flf" /usr/share/figlet
+		sleep 3
 	fi
 }
 
@@ -68,10 +94,10 @@ while true; do
 	tput cup $((height / 3)) 0
 
 	# Print centered time
-	# echo -n "$centered_time"
 	echo $(date +'%H : %M : %S') | figlet -f "ANSI Shadow" -c -t
 
 	# Sleep for 1 second
 	sleep 1
 done
+
 return 0
