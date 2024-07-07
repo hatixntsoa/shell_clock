@@ -31,12 +31,15 @@ function install_figlet() {
 		$SUDO apt-get update
 		$SUDO apt-get install -y figlet
 	elif command -v yum &>/dev/null; then
+		$SUDO yum update
 		$SUDO yum install -y figlet
 	elif command -v dnf &>/dev/null; then
+		$SUDO dnf update
 		$SUDO dnf install -y figlet
 	elif command -v pacman &>/dev/null; then
-		$SUDO pacman -S --noconfirm figlet
+		$SUDO pacman -Syu --noconfirm figlet
 	elif command -v zypper &>/dev/null; then
+		$SUDO zypper update
 		$SUDO zypper install -y figlet
 	else
 		echo "No supported package manager found. Please install figlet manually."
@@ -88,7 +91,7 @@ else
 	if command -v sudo &>/dev/null; then
 		SUDO="sudo"
 	else
-		echo "Sorry, sudo is not available. Please run this script as root or with sudo."
+		echo "Sorry, sudo is not available."
 		exit 1
 	fi
 fi
