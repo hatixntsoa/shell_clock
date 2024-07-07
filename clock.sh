@@ -108,17 +108,25 @@ font_check
 
 # Main loop
 while true; do
-	# Get terminal size
-	terminal_size=$(get_terminal_size)
-	width=$(echo "$terminal_size" | cut -d' ' -f1)
-	height=$(echo "$terminal_size" | cut -d' ' -f2)
+	# Don't apply center method on termux
+	if [ ! -f "/system/build.prop" ]; then
+		# Get terminal size
+		terminal_size=$(get_terminal_size)
+		width=$(echo "$terminal_size" | cut -d' ' -f1)
+		height=$(echo "$terminal_size" | cut -d' ' -f2)
 
-	# Get centered time
-	centered_time=$(date +'%H:%M:%S')
-	centered_time=$(center_text "$centered_time" "$width")
-	clear
-	# Move cursor to the center of the terminal
-	tput cup $((height / 3)) 0
+		# Get centered time
+		centered_time=$(date +'%H:%M:%S')
+		centered_time=$(center_text "$centered_time" "$width")
+		clear
+
+		# Move cursor to the center of the terminal
+		# except for termux
+		tput cup $((height / 3)) 0
+	else
+		clear
+		echo -e && echo -e && echo -e
+	fi
 
 	# Print centered time
 	echo $(date +'%H : %M : %S') | figlet -f "ANSI Shadow" -c -t
