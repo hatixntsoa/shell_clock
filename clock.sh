@@ -47,6 +47,7 @@ function install_figlet() {
 # Function to check if figlet is installed
 function check_figlet() {
 	if ! command -v figlet &>/dev/null; then
+		$SUDO echo
 		install_figlet
 		if ! command -v figlet &>/dev/null; then
 			echo "figlet installation failed. Please install it manually."
@@ -58,7 +59,7 @@ function check_figlet() {
 }
 
 # Function to check if the ANSI Shadow font file exists
-function font_check() {
+function check_font() {
 	local figlet_fonts=$(
 		whereis figlet |
 			grep -o '/[^ ]*/share' |
@@ -66,6 +67,7 @@ function font_check() {
 			head -n 1
 	)
 	if [ ! -f "$figlet_fonts/ANSI Shadow.flf" ]; then
+		$SUDO echo
 		echo "Installing ANSI Shadow figlet font..."
 		$SUDO cp -rv "font/ANSI Shadow.flf" "$figlet_fonts"
 		if [ $? -eq 0 ]; then
@@ -97,14 +99,11 @@ trap cleanup SIGINT
 # Disable printing special characters when Ctrl+C is pressed
 stty -echoctl
 
-# Here to init sudo if needed
-$SUDO echo
-
 # Check if figlet is installed
 check_figlet
 
-# Check if the ANSI Shadow font file exists
-font_check
+# Check if the font file exists
+check_font
 
 # Main loop
 while true; do
