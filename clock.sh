@@ -67,7 +67,7 @@ function font_check() {
 	)
 	if [ ! -f "$figlet_fonts/ANSI Shadow.flf" ]; then
 		echo "Installing ANSI Shadow figlet font..."
-		$SUDO cp -rv "ANSI Shadow.flf" "$figlet_fonts"
+		$SUDO cp -rv "font/ANSI Shadow.flf" "$figlet_fonts"
 		if [ $? -eq 0 ]; then
 			echo "Font installed successfully."
 		else

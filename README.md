@@ -5,4 +5,4 @@
 ./clock.sh
 ```
 
-![Clock Image](clock.png)
+![Clock Image](image/clock.png)
