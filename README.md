@@ -1,11 +1,20 @@
 # A Simple Shell Digital Clock
 
-- Run the clock
+## Clone the Repository
+
+```bash
+git clone https://github.com/h471x/shell_clock.git
+cd shell_clock
+```
+
+## Run the Clock
+
 ```shell
 ./clock.sh
 ```
 
 ![Clock Image](image/clock.png)
 
-- Stop the clock
-<kbd>Ctrl</kbd> +  <kbd>C</kbd>
+## Stop the Clock
+
+Press <kbd>Ctrl</kbd> + <kbd>C</kbd>
