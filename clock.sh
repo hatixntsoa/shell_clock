@@ -73,6 +73,7 @@ function check_font() {
 		$SUDO echo
 		echo "Installing ANSI Shadow figlet font..."
 		$SUDO cp -rv "font/ANSI Shadow.flf" "$figlet_fonts"
+    $SUDO chmod 644 "$figlet_fonts"/"ANSI Shadow.flf"
 		if [ $? -eq 0 ]; then
 			echo "Font installed successfully."
 		else
