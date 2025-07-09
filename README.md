@@ -3,7 +3,7 @@
 ## Clone the Repository
 
 ```bash
-git clone https://github.com/h471x/shell_clock.git
+git clone https://github.com/hatixntsoa/shell_clock.git
 cd shell_clock
 ```
 
